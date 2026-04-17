@@ -1,7 +1,13 @@
 import os
 from sqlmodel import SQLModel, create_engine, Session
 
-DATA_DIR = os.environ.get("DATA_DIR", os.path.join(os.path.dirname(os.path.dirname(__file__)), "data"))
+_FLY_VOLUME = "/data"
+_DEFAULT_DATA_DIR = (
+    _FLY_VOLUME
+    if os.path.isdir(_FLY_VOLUME) and os.access(_FLY_VOLUME, os.W_OK)
+    else os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+)
+DATA_DIR = os.environ.get("DATA_DIR", _DEFAULT_DATA_DIR)
 os.makedirs(DATA_DIR, exist_ok=True)
 
 DB_PATH = os.environ.get("DB_PATH", os.path.join(DATA_DIR, "app.db"))
